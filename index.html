@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENEM Review Schedule</title>
+  <style>
+    :root {
+      --bg: #f9f9fb;
+      --text: #222;
+      --card: #fff;
+      --accent: #2b5cff;
+      --shadow: rgba(0,0,0,0.1);
+    }
+    body.dark {
+      --bg: #1c1c1c;
+      --text: #e0e0e0;
+      --card: #2a2a2a;
+      --accent: #729cff;
+      --shadow: rgba(255,255,255,0.1);
+    }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1, h2 {
+      color: var(--accent);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .day {
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px var(--shadow);
+      padding: 20px;
+      margin-bottom: 25px;
+      transition: background 0.3s, color 0.3s;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .progress-container {
+      background: #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+    .dark-toggle {
+      background: none;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>ENEM Review Schedule</h1>
+    <button class="dark-toggle" id="toggleDark">🌙 Dark Mode</button>
+  </div>
+  <p style="text-align:center">Thursday → Saturday review plan before the exam</p>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <p id="progressText" style="text-align:center;margin-top:8px;">0% completed</p>
+
+  <!-- Thursday -->
+  <div class="day">
+    <h2>📘 Thursday – Linguagens (~1.5h)</h2>
+    <ul>
+      <li><input type="checkbox" id="thu-1">Text Interpretation (3 ENEM-style texts)</li>
+      <li><input type="checkbox" id="thu-2">Grammar & Cohesion (connectives, pronouns, figures)</li>
+      <li><input type="checkbox" id="thu-3">Literature timeline (Romantismo → Contemporâneo)</li>
+      <li><input type="checkbox" id="thu-4">Foreign Language reading (1 short text or song)</li>
+    </ul>
+  </div>
+
+  <!-- Friday -->
+  <div class="day">
+    <h2>🌍 Friday – Ciências Humanas (~1.5h)</h2>
+    <ul>
+      <li><input type="checkbox" id="fri-1">History timeline (Colonization → New Republic)</li>
+      <li><input type="checkbox" id="fri-2">World History (French Rev. + Cold War)</li>
+      <li><input type="checkbox" id="fri-3">Geography (urbanization, energy, environment)</li>
+      <li><input type="checkbox" id="fri-4">Sociology & Philosophy flashcards (Marx, Weber, etc.)</li>
+    </ul>
+  </div>
+
+  <!-- Saturday -->
+  <div class="day">
+    <h2>✍️ Saturday – Redação + Review (2–3h)</h2>
+    <ul>
+      <li><input type="checkbox" id="sat-1">Write 1 essay draft on a social theme</li>
+      <li><input type="checkbox" id="sat-2">Self-correct essay (ENEM criteria)</li>
+      <li><input type="checkbox" id="sat-3">General review flashcards (10 questions)</li>
+      <li><input type="checkbox" id="sat-4">Light reading (opinion article)</li>
+    </ul>
+  </div>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const toggleDark = document.getElementById('toggleDark');
+
+    // Load saved state
+    checkboxes.forEach(cb => {
+      const saved = localStorage.getItem(cb.id);
+      if (saved === 'true') cb.checked = true;
+
+      cb.addEventListener('change', () => {
+        localStorage.setItem(cb.id, cb.checked);
+        updateProgress();
+      });
+    });
+
+    // Progress calculation
+    function updateProgress() {
+      const total = checkboxes.length;
+      const done = [...checkboxes].filter(cb => cb.checked).length;
+      const percent = Math.round((done / total) * 100);
+      progressBar.style.width = percent + '%';
+      progressText.textContent = `${percent}% completed (${done}/${total})`;
+    }
+
+    // Dark mode toggle
+    function setDarkMode(enabled) {
+      document.body.classList.toggle('dark', enabled);
+      localStorage.setItem('darkMode', enabled);
+      toggleDark.textContent = enabled ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    toggleDark.addEventListener('click', () => {
+      const enabled = !document.body.classList.contains('dark');
+      setDarkMode(enabled);
+    });
+
+    // Load dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+      setDarkMode(true);
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>
+
